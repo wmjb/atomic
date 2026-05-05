@@ -110,6 +110,12 @@ if (WIN32)
         # https://github.com/boostorg/atomic/issues/73
         target_compile_definitions(boost_atomic PUBLIC _WIN32_WINNT=0x0A00)
     endif()
+
+    # Windows ARM32 does not provide WaitOnAddress/WakeByAddress* APIs.
+    # Force Boost.Atomic to use the fallback wait implementation.
+    if (CMAKE_SYSTEM_PROCESSOR MATCHES "^(ARM|armv7|arm)$")
+        target_compile_definitions(boost_atomic PUBLIC BOOST_ATOMIC_NO_WAIT_ON_ADDRESS)
+    endif()
 endif()
 
 target_compile_definitions(boost_atomic
